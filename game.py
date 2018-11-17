@@ -1,15 +1,19 @@
-import sys, pygame
-import colors
-width = 500
-height = 400
 
-display = pygame.display.set_mode([width, height])
-# TODO: make this an appropriate name
-pygame.display.set_caption("Hackathon game")
-display.fill(colors.black)
-pygame.display.update()
+import pygame
 
-while(True):
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
+def main():
+
+        # Initialize Pygame
+        pygame.init()
+        pygame.display.set_caption("Necromancy")
+        screen = pygame.display.set_mode((800,600))
+
+        # Define the gameplay loop
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+if __name__=="__main__":
+    main()
