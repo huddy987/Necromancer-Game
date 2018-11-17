@@ -1,15 +1,14 @@
 import pygame
 import colors
-
-ENEMY_SIZE = 4
+import math
 
 class Enemy(pygame.sprite.Sprite):
     # Spawn an enemy based on x, y, enemyType and enemy Speed
     # enemyType has no current use
-    def __init__(self, x, y, enemyType, enemySpeed):
+    def __init__(self, x, y, enemyType, enemySpeed, enemySize):
         pygame.sprite.Sprite.__init__(self)
         # Initizalize enemy to be size of global ENEMY_SIZE
-        self.image = pygame.Surface((ENEMY_SIZE, ENEMY_SIZE))
+        self.image = pygame.Surface((enemySize, enemySize))
         self.image.fill(colors.red)
         self.rect = self.image.get_rect()
         self.speed = enemySpeed
@@ -35,5 +34,5 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x += 0
             self.rect.y += 0
     
-    def update(self):
+    def update(self, WIDTH, HEIGHT, player):
         self.followPlayer(player)

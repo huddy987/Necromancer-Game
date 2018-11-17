@@ -16,44 +16,40 @@ has to be added to all armies by
 import pygame
 import math
 import random
-
-WIDTH = 480
+import colors
+"""
+WIDTH = 800
 HEIGHT = 600
 FPS = 60
+"""
 
 army_size = 4               # probably the same
 army_speed = 5           # different for different level of army
-army_colour = (0, 0, 255)  # BLUE
-army_radius = 40    # army will stop moving when it's this close to the pointer
+army_radius = 5   # army will stop moving when it's this close to the pointer
 army_number = 100
 
-# define colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-
 # initialize pygame and create window
+"""
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
+"""
 
 class Army(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, startingX, startingY, army_size, army_speed):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((army_size, army_size))
-        self.image.fill(army_colour)
+        self.image.fill(colors.blue)
         self.rect = self.image.get_rect()
-        self.rect.centerx = WIDTH / 2
-        self.rect.bottom = HEIGHT - 10
+        self.rect.centerx = startingX
+        self.rect.bottom = startingY
         self.speedx = 0
         self.speedy = 0
+        self.army_speed = army_speed
 
-    def update(self):
+    def update(self, WIDTH, HEIGHT):
         # the army will follow the mouse pointer
         self.speedx = 0
         self.speedy = 0
@@ -80,6 +76,7 @@ class Army(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
         # stops the box at the edge of the screen
+        
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
@@ -88,5 +85,6 @@ class Army(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
+            
 
         # if edge collision with other army, stop.
