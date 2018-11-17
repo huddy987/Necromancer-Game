@@ -1,8 +1,43 @@
 import pygame
 import colors
 
-class Player:
-
+class Player(pygame.sprite.Sprite):
+    def __init__(self, startingX, startingY, playerSize):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((playerSize, playerSize))
+        self.image.fill(colors.green)
+        self.rect = self.image.get_rect()
+        self.rect.centerx  = startingX
+        self.rect.bottom = startingY
+        self.speedx = 0
+        self.speedy = 0
+    
+    def update(self, WIDTH, HEIGHT):
+        self.speedx = 0
+        self.speedy = 0
+        keystate = pygame.key.get_pressed()
+        
+        if keystate[pygame.K_a]:
+            self.speedx = -5
+        if keystate[pygame.K_d]:
+            self.speedx = 5
+        if keystate[pygame.K_w]:
+            self.speedy = -5 
+        if keystate[pygame.K_s]:
+            self.speedy = 5
+            
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+        
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
+        if self.rect.top < 0:
+            self.rect.top = 0        
+    """
     def __init__(self, position, max_vel, size):
         self._max_vel = max_vel
         # Position 0 is x coordinate, position 1 is y coordinate
@@ -69,3 +104,4 @@ class Player:
         # update position
         self._position[0] += self._velocity[0]
         self._position[1] += self._velocity[1]
+        """
