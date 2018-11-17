@@ -4,38 +4,18 @@
 # Player sprite and movement
 # https://stackoverflow.com/questions/29873814/pygame-mouse-get-pos-the-x-y-co-oridinates-not-updating
 
-"""
-to instantiate an army object:
- >>> army = Army()
-has to be added to all armies by
->>> all_armies.add(army)
->> all_armies.update()
->> all_armies.draw(screen)
-"""
 
 import pygame
 import math
 import random
 import colors
-"""
-WIDTH = 800
-HEIGHT = 600
-FPS = 60
-"""
 
 army_size = 4               # probably the same
 army_speed = 5           # different for different level of army
 army_radius = 5   # army will stop moving when it's this close to the pointer
 army_number = 100
 
-# initialize pygame and create window
-"""
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Shmup!")
-clock = pygame.time.Clock()
-"""
+
 
 class Army(pygame.sprite.Sprite):
     def __init__(self, startingX, startingY, army_size, army_speed):
@@ -76,7 +56,7 @@ class Army(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
         # stops the box at the edge of the screen
-        
+
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
@@ -85,6 +65,6 @@ class Army(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
-            
+
 
         # if edge collision with other army, stop.
