@@ -9,18 +9,18 @@ def main():
     WIDTH = 800
     HEIGHT = 600
     FPS = 30
-    
+
     pygame.init()
     pygame.mixer.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
-    clock = pygame.time.Clock()  
-    
+    clock = pygame.time.Clock()
+
     all_players = pygame.sprite.Group()
     player1 = player.Player(400, 300, 40)
     all_enemies = pygame.sprite.Group()
     enemy1 = enemy.Enemy(200, 200, 0, 2, 40)
-    enemy2 = enemy.Enemy(10, 10, 0, 3, 40) 
+    enemy2 = enemy.Enemy(10, 10, 0, 3, 40)
     all_armies = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
 
@@ -29,23 +29,23 @@ def main():
     all_enemies.add(enemy1)
     all_enemies.add(enemy2)
     all_armies.add(armies)
-    
+
     running = True
     while running:
         # keep loop running at the right speed
         clock.tick(FPS)
-    
+
         # Process input (events)
         for event in pygame.event.get():
             # check for closing window
             if event.type == pygame.QUIT:
                 running = False
-    
+
         # Update
         all_players.update(WIDTH, HEIGHT)
         all_enemies.update(WIDTH, HEIGHT, player1)
         all_armies.update(WIDTH, HEIGHT)
-    
+
         # Draw / render
         screen.fill(colors.black)
         #all_sprites.draw(screen)
@@ -56,43 +56,7 @@ def main():
         # *after* drawing everything, flip the display
         pygame.display.flip()
 
-    pygame.quit()    
-    
-    # Initialize Pygame
-    """
-    pygame.init()
-    pygame.display.set_caption("bruh")
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(colors.black)
-    pygame.display.update()
-    clock = pygame.time.Clock()
-    
-    #initialize Player
-    character = player.Player([100, 100], 5, [10, 10])
-    
-    # Define the gameplay loop
-    running = True
-    while running:
-        screen.fill(colors.black)
-    
-        # check player/wall collision
-        character.check_edge_collision(width, height)
-    
-        # update player velocity
-        character.update_velocity()
-    
-        # move player
-        character.move()
-    
-        # draw the player
-        character.draw(screen)
-    
-        # check for input events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-    
-        pygame.display.update()
-"""
+    pygame.quit()
+
 if __name__=="__main__":
     main()
