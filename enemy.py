@@ -5,6 +5,7 @@ import gravestone
 
 damage = 1
 
+
 class Enemy(pygame.sprite.Sprite):
     # Spawn an enemy based on x, y, enemyType and enemy Speed
     # enemyType has no current use
@@ -51,7 +52,7 @@ class Enemy(pygame.sprite.Sprite):
         self.followPlayer(player)
 
     def kill(self, group):
-        grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40)
+        grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40, self.speed)
         group.remove(self)
         return grave
 
