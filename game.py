@@ -30,7 +30,7 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, playerimage):
 
     camera1.update(player1.speedx, player1.speedy, zoom)
     screen.blit(background, (camera1.x,camera1.y))
@@ -39,7 +39,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, b
     all_enemies.draw(screen)
     all_armies.draw(screen)
     #Update
-    all_players.update(WIDTH, HEIGHT)
+    all_players.update(WIDTH, HEIGHT, playerimage)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
 
@@ -60,10 +60,11 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
     background = pygame.image.load("Background.png")
+    playerimage = [pygame.image.load("player0000.png"), pygame.image.load("player0001.png"), pygame.image.load("player0002.png")]
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
-    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
+    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH, playerimage)
     all_armies = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
     camera1 = camera.Camera(WIDTH/2, HEIGHT/2, 1)
@@ -94,7 +95,7 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, playerimage)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
