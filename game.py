@@ -1,12 +1,20 @@
-import pygame, colors, player, army, enemy, math, text, random, time, camera, bullet
+import pygame, colors, player, army, enemy, math, text, random, time, camera, bullet, powerup
 
-def spawnEnemies(time, frequency):
+# Spawns an item based on the current time
+def spawnItem(time, frequency):
+    if (time % frequency) == 0:
+        return True
+    else:
+        return False
+    
+def spawnEnemy(time, frequency):
     if (time % frequency) == 0:
         return True
     else:
         return False
 
 
+# Handles the reset screen
 def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies):
     for i in all_enemies:
         all_enemies.remove(i)
@@ -33,7 +41,7 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
             for emma in army_collide_dict[arma]:
                 grave = emma.collide(player1, all_enemies) # collide(enemy)
                 if grave != 0:
-                  all_graves.add(grave)
+                    all_graves.add(grave)
 
     # This deals with the bullets (from the wizard) hitting the enemy
     bullets_collide_dict = pygame.sprite.groupcollide(all_bullets,all_enemies, False, False)
@@ -44,8 +52,9 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
             for emma in bullets_collide_dict[arma]:
                 grave = emma.kill(player1, all_enemies) # collide(enemy)
                 if grave != 0:
-                  all_graves.add(grave)
+                    all_graves.add(grave)
 
+# Handles the wizard resurrecting from a grave
 def wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves):
     wizard_hit = pygame.sprite.spritecollideany(player1, all_enemies)
     if wizard_hit:
@@ -69,12 +78,27 @@ def grave_touching(player1, all_graves, all_armies, grave_counter):
         else:
             grave_counter = 60
         return grave_counter
+    
+# Handles the wizard picking up a powerup
+def powerup_touching(player1, all_powerups, powerup_counter):
+    powerup_touch = pygame.sprite.spritecollideany(player1, all_powerups)
+    if powerup_touch:
+        if powerup_counter != 0:
+            powerup_counter -= 1
+        elif powerup_counter == 0:
+            powerup_counter = 150
+            all_powerups.remove(powerup_touch)
+            player1.health += 2
+    else:
+        powerup_counter = 150
+    return powerup_counter
 
+# Plays music throughout the gameplay
 def music():
     pygame.mixer.music.load("./soundtrack.wav")
     pygame.mixer.music.play(-1)
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves, all_powerups):
 
     camera1.update(player1, WIDTH, HEIGHT)
     screen.blit(background, (camera1.x, camera1.y))
@@ -83,6 +107,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     all_enemies.draw(screen)
     all_armies.draw(screen)
     all_bullets.draw(screen)
+    all_powerups.draw(screen)
 
     #Update
     all_graves.update(player1, camera1, WIDTH, HEIGHT, all_graves)
@@ -90,6 +115,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update(all_bullets, player1)
+    all_powerups.update(player1, camera1, WIDTH, HEIGHT, all_powerups)
 
     text.draw_score(screen, player1.score, WIDTH)
     text.draw_health(screen, player1.health, WIDTH)
@@ -107,6 +133,7 @@ def main():
     PLAYER_HEALTH = 5
     FPS = 60
 
+    powerup_counter = 120
     grave_counter = 60
 
     pygame.init()
@@ -116,7 +143,6 @@ def main():
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
-
     player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
 
     # Set the doc icon the the main player
@@ -132,18 +158,30 @@ def main():
     all_enemies = pygame.sprite.Group()
 
     all_graves = pygame.sprite.Group()
+    all_powerups = pygame.sprite.Group()
 
     music()
+    
+    frequency = 100
 
     running = True
     while running:
         # keep loop running at the right speed
         clock.tick(FPS)
         ktime += 1
+        
+        if ktime % frequency == 0:
+            frequency -= 5
+            if frequency <= 50:
+                frequency = 50
+        
+        
         # Detect Collisions,
         collisions(all_enemies, all_armies, player1, all_graves, all_bullets)
         # Detect grave touching
         grave_counter = grave_touching(player1, all_graves, all_armies, grave_counter)
+        powerup_counter = powerup_touching(player1, all_powerups, powerup_counter)
+        
         # Detect wizard touching enemy
         wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves)
 
@@ -156,13 +194,19 @@ def main():
 
             # Draw / render
             screen.fill(colors.black)
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves, all_powerups)
 
             # Spawn enemies based on frequency
             if spawnEnemies(ktime, 100):
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
+                print('e', ktime)
+            
+            # Spawn powerups
+            if spawnItem(ktime, 500):
+                p = powerup.PowerUp(random.randint(0, WIDTH * 2), random.randint(0, HEIGHT * 2), 40)
+                all_powerups.add(p)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
