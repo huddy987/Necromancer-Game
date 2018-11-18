@@ -32,7 +32,7 @@ def collisions(armies, all_enemies, player1):
 
 def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets):
 
-    camera1.update(player1.speedx, player1.speedy)
+    camera1.update(player1, WIDTH, HEIGHT)
     screen.blit(background, (camera1.x, camera1.y))
     #all_sprites.draw(screen)
     all_players.draw(screen)
@@ -93,15 +93,16 @@ def main():
                 running = False
 
         if player1.health != 0:
+
+            # Draw / render
+            screen.fill(colors.black)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets)
+            
             # Spawn enemies based on frequency
             if spawnEnemies(ktime, 100):
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
-
-            screen.fill(colors.black)
-            # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)

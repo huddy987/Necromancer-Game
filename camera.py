@@ -6,14 +6,14 @@ class Camera:
         self.x = CameraX
         self.y = CameraY
 
-    def update(self, player_x, player_y):
-        self.x -= player_x * 4
-        self.y -= player_y * 4
+    def update(self, player, HEIGHT, WIDTH):
+        self.x -= player.speedx * 4
+        self.y -= player.speedy * 4
         if self.x > 0:
             self.x = 0
         if self.y > 0:
             self.y = 0
-        if self.x < -800:
-            self.x =  -800
-        if self.y < -600:
-            self.y = -600
+        if self.x < -HEIGHT:
+            self.x =  -HEIGHT
+        if self.y < -WIDTH:
+            self.y = -WIDTH

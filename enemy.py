@@ -15,10 +15,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x  = x
         self.rect.y = y
         self.enemyType = enemyType
-        #self.speedx = 0        
-        
+
     #https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
-    
+
     # Allows the enemy to follow the player by calculating the
     # distnace vector between the enemy and the player and multiplying it by the speed of the enemy
     def followPlayer(self, player):
@@ -33,6 +32,6 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.rect.x += 0
             self.rect.y += 0
-    
+
     def update(self, WIDTH, HEIGHT, player):
         self.followPlayer(player)

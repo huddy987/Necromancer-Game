@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self)
         self.size = playerSize
-        self.images = [pygame.image.load("player0000.png"), pygame.image.load("player0001.png"), pygame.image.load("player0002.png")]
+        self.images = [pygame.image.load("player_images/player0000.png"), pygame.image.load("player_images/player0001.png"), pygame.image.load("player_images/player0002.png")]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.centerx  = startingX
