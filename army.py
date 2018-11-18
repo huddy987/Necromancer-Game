@@ -14,6 +14,8 @@ army_size = 4               # probably the same
 army_speed = 5           # different for different level of army
 army_radius = 5   # army will stop moving when it's this close to the pointer
 army_number = 100
+army_health = 3
+damage = 1  # for now
 
 
 
@@ -27,6 +29,7 @@ class Army(pygame.sprite.Sprite):
         self.rect.bottom = startingY
         self.speedx = 0
         self.speedy = 0
+        self.army_health = army_health
         self.army_speed = army_speed
 
     def update(self, WIDTH, HEIGHT):
@@ -66,5 +69,9 @@ class Army(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.rect.top = 0
 
+
+    def collide(self):
+        print("army.collide()")
+        del self
 
         # if edge collision with other army, stop.

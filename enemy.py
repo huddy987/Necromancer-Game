@@ -2,6 +2,8 @@ import pygame
 import colors
 import math
 
+damage = 1
+
 class Enemy(pygame.sprite.Sprite):
     # Spawn an enemy based on x, y, enemyType and enemy Speed
     # enemyType has no current use
@@ -15,6 +17,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x  = x
         self.rect.y = y
         self.enemyType = enemyType
+        self.enemy_health = 2
         #self.speedx = 0        
         
     #https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
@@ -36,3 +39,10 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self, WIDTH, HEIGHT, player):
         self.followPlayer(player)
+
+    def collide(self):
+        print("x")
+        print(self.rect.x)
+        print("y")
+        print(self.rect.y)
+        
