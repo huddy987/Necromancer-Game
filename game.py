@@ -17,7 +17,9 @@ def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
     player1.rect.x = WIDTH/2
     player1.rect.y = HEIGHT/2
     
-def collisions(all_enemies, all_armies, player1, all_graves):
+def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
+
+    # this deals with the army touching the enemy
     army_collide_dict = pygame.sprite.groupcollide(all_armies,all_enemies, False, False)
     if army_collide_dict:       # key is the army, value is the enemy list
         all_enemies_collided = army_collide_dict.keys()
@@ -27,15 +29,26 @@ def collisions(all_enemies, all_armies, player1, all_graves):
                 grave = emma.collide(all_enemies) # collide(enemy)
                 if grave != 0:
                   all_graves.add(grave)
-                  # all_enemies.remove(emma)
-    # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill 
+    
+    # This deals with the wizard touching the gravestones
     grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
     if grave_touch:
         armamento = army.Army(200, 400, 40, 5)
         all_armies.add(armamento)
         all_graves.remove(grave_touch)
-    # collide(army_collide_dict[enemy])
 
+    # This deals with the bullets (from the wizard) hitting the
+    bullets_collide_dict = pygame.sprite.groupcollide(all_bullets,all_enemies, False, False)
+    if bullets_collide_dict:       # key is the army, value is the enemy list
+        all_bullets_collided = bullets_collide_dict.keys()
+        for arma in all_bullets_collided:      # get the death here
+            arma.collide(all_bullets)
+            for emma in bullets_collide_dict[arma]:
+                grave = emma.collide(all_enemies) # collide(enemy)
+                if grave != 0:
+                  all_graves.add(grave)
+
+            
 
 
 def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves):
@@ -97,7 +110,7 @@ def main():
         clock.tick(FPS)
         ktime += 1
         # Detect Collisions,
-        collisions(all_enemies, all_armies, player1, all_graves)
+        collisions(all_enemies, all_armies, player1, all_graves, all_bullets)
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
