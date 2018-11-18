@@ -35,9 +35,9 @@ def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1):
     if army_collide_dict:       # key is the enemy, value is the army
         all_enemies_collided = army_collide_dict.keys()
         for arma in all_enemies_collided:      # get the death here
-            arma.collide()
+            arma.collide(all_armies)
             for emma in army_collide_dict[arma]:
-                emma.collide()            # collide(enemy)
+                emma.collide(all_enemies)            # collide(enemy)
                 all_enemies.remove(emma)
 
 

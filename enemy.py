@@ -40,9 +40,11 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, WIDTH, HEIGHT, player):
         self.followPlayer(player)
 
-    def collide(self):
-        print("x")
-        print(self.rect.x)
-        print("y")
-        print(self.rect.y)
+    def kill(self, group):
+        group.remove(self)
+
+    def collide(self, group):
+        self.enemy_health -= 1
+        if self.enemy_health == 0:
+            self.kill(group)
         
