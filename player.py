@@ -5,11 +5,12 @@ import game
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, startingX, startingY, playerSize, playerSpeed, starting_health, playerimage):
+    def __init__(self, startingX, startingY, playerSize, playerSpeed, starting_health):
 
         pygame.sprite.Sprite.__init__(self)
         self.size = playerSize
-        self.image = playerimage[0]
+        self.images = [pygame.image.load("player0000.png"), pygame.image.load("player0001.png"), pygame.image.load("player0002.png")]
+        self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.centerx  = startingX
         self.rect.bottom = startingY
@@ -21,16 +22,17 @@ class Player(pygame.sprite.Sprite):
         self.bullet_cooldown = 0
         self.spritetimer = 0
 
-    def update(self, WIDTH, HEIGHT, playerimage):
-        # Update sprite
-        if self.spritetimer == 90:
-            self.image = playerimage[2]
-            self.spritetimer = 0
-        elif self.spritetimer == 60:
-            self.image = playerimage[1]
-        elif self.spritetimer == 30:
-            self.image = playerimage[0]
-        self.spritetimer += 1
+    def update(self, WIDTH, HEIGHT):
+        # Update sprite if the chracter is moving
+        if self.speedx != 0 or self.speedy != 0:
+            if self.spritetimer == 90:
+                self.image = self.images[2]
+                self.spritetimer = 0
+            elif self.spritetimer == 60:
+                self.image = self.images[1]
+            elif self.spritetimer == 30:
+                self.image = self.images[0]
+            self.spritetimer += 1
 
         self.speedx = 0
         self.speedy = 0

@@ -2,15 +2,13 @@ import pygame
 import player
 
 class Camera:
-    def __init__(self, CameraX, CameraY, zoom):
+    def __init__(self, CameraX, CameraY):
         self.x = CameraX
         self.y = CameraY
-        self.zoom = zoom
 
-    def update(self, player_x, player_y, zoom):
+    def update(self, player_x, player_y):
         self.x -= player_x * 4
         self.y -= player_y * 4
-        self.zoom = zoom
         if self.x > 0:
             self.x = 0
         if self.y > 0:

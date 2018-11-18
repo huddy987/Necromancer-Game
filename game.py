@@ -30,17 +30,17 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets):
 
     camera1.update(player1.speedx, player1.speedy, zoom)
-    screen.blit(background, (camera1.x,camera1.y))
+    screen.blit(background, (camera1.x, camera1.y))
     #all_sprites.draw(screen)
     all_players.draw(screen)
     all_enemies.draw(screen)
     all_armies.draw(screen)
     all_bullets.draw(screen)
     #Update
-    all_players.update(WIDTH, HEIGHT, playerimage)
+    all_players.update(WIDTH, HEIGHT)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update()
@@ -53,7 +53,6 @@ def main():
     # Global variables
     WIDTH = 800
     HEIGHT = 600
-    zoom = 1
     ktime = 0
 
     PLAYER_SIZE = 40
@@ -65,12 +64,11 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
     background = pygame.image.load("Background.png")
-    playerimage = [pygame.image.load("player0000.png"), pygame.image.load("player0001.png"), pygame.image.load("player0002.png")]
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
     # FPS * 2 is the bullet cooldown (2 seconds)
-    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH, playerimage)
+    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
     all_armies = pygame.sprite.Group()
     all_bullets = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
@@ -103,7 +101,7 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
