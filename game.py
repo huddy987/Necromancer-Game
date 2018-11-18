@@ -17,7 +17,8 @@ def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
     player1.rect.x = WIDTH/2
     player1.rect.y = HEIGHT/2
 
-def collisions(armies, all_enemies, player1):
+"""
+def collisions(armies, all_enemies, player1, all_armies):
     armyprotect = pygame.sprite.spritecollide(armies, all_enemies, False)
     if armyprotect:
         print(armyprotect)
@@ -28,6 +29,20 @@ def collisions(armies, all_enemies, player1):
     for i in playerhit:
         hits += 1
     player1.health -= hits
+"""
+def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1):
+    army_collide_dict = pygame.sprite.groupcollide(all_armies,all_enemies, False, False)
+    if army_collide_dict:       # key is the enemy, value is the army
+        all_enemies_collided = army_collide_dict.keys()
+        for arma in all_enemies_collided:      # get the death here
+            arma.collide()
+            for emma in army_collide_dict[arma]:
+                emma.collide()            # collide(enemy)
+                all_enemies.remove(emma)
+
+
+            # collide(army_collide_dict[enemy])
+
 
 
 def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1):
@@ -79,7 +94,7 @@ def main():
         clock.tick(FPS)
         ktime += 1
         # Detect Collisions,
-        collisions(armies, all_enemies, player1)
+        collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1)
         # Process exit event
         for event in pygame.event.get():
             # check for closing window

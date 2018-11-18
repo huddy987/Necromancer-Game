@@ -70,12 +70,8 @@ class Army(pygame.sprite.Sprite):
             self.rect.top = 0
 
 
-    def collide(self, damage):
-        self.army_health -= damage
-        if self.army_health == 0:
-            del self
-        else :
-            self.speedy = - self.speedy
-            self.speedx = - self.speedx
+    def collide(self):
+        print("army.collide()")
+        del self
 
         # if edge collision with other army, stop.
