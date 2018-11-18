@@ -1,5 +1,6 @@
 import pygame
 import colors
+import bullet
 
 class Player(pygame.sprite.Sprite):
 
@@ -7,6 +8,7 @@ class Player(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((playerSize, playerSize))
+        self.size = playerSize
         self.image.fill(colors.green)
         self.rect = self.image.get_rect()
         self.rect.centerx  = startingX
@@ -16,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.health = starting_health
         self.score = 0
         self.playerSpeed = playerSpeed
+        self.bullet_cooldown = 0
 
     def update(self, WIDTH, HEIGHT):
         self.speedx = 0
@@ -42,3 +45,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
+
+    def check_shoot(self, cooldown):
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_SPACE] and (self.speedx != 0 or self.speedy !=0) and (self.bullet_cooldown == 0):
+            self.bullet_cooldown = cooldown
+            return True

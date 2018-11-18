@@ -8,8 +8,8 @@ class Camera:
         self.zoom = zoom
 
     def update(self, player_x, player_y, zoom):
-        self.x -= player_x
-        self.y -= player_y
+        self.x -= player_x * 4
+        self.y -= player_y * 4
         self.zoom = zoom
         if self.x > 0:
             self.x = 0
