@@ -30,9 +30,9 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets):
 
-    camera1.update(player1.speedx, player1.speedy, zoom)
+    camera1.update(player1.speedx, player1.speedy)
     screen.blit(background, (camera1.x, camera1.y))
     #all_sprites.draw(screen)
     all_players.draw(screen)
@@ -72,7 +72,7 @@ def main():
     all_armies = pygame.sprite.Group()
     all_bullets = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
-    camera1 = camera.Camera(WIDTH/2, HEIGHT/2, 1)
+    camera1 = camera.Camera(WIDTH/2, HEIGHT/2)
 
     all_players.add(player1)
     all_armies.add(armies)
@@ -101,7 +101,7 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
