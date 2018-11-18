@@ -17,33 +17,22 @@ def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
     player1.rect.x = WIDTH/2
     player1.rect.y = HEIGHT/2
 
-"""
-def collisions(armies, all_enemies, player1, all_armies):
-    armyprotect = pygame.sprite.spritecollide(armies, all_enemies, False)
-    if armyprotect:
-        print(armyprotect)
-    for deads in armyprotect:
-        all_enemies.remove(deads)
-    playerhit = pygame.sprite.spritecollide(player1, all_enemies, False)
-    hits = 0
-    for i in playerhit:
-        hits += 1
-    player1.health -= hits
-"""
+
 def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves):
     army_collide_dict = pygame.sprite.groupcollide(all_armies,all_enemies, False, False)
-    if army_collide_dict:       # key is the enemy, value is the army
+    if army_collide_dict:       # key is the army, value is the enemy list
         all_enemies_collided = army_collide_dict.keys()
         for arma in all_enemies_collided:      # get the death here
-            arma.collide()
+            arma.collide(all_armies)
             for emma in army_collide_dict[arma]:
-                grave = emma.collide() # collide(enemy)
-                all_graves.add(grave)
-                all_enemies.remove(emma)
-    
+                grave = emma.collide(all_enemies) # collide(enemy)
+                if grave != 0:
+                  all_graves.add(grave)
+                  # all_enemies.remove(emma)
+    # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill 
 
 
-            # collide(army_collide_dict[enemy])
+    # collide(army_collide_dict[enemy])
 
 
 

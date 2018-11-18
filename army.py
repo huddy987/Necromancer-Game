@@ -44,6 +44,8 @@ class Army(pygame.sprite.Sprite):
 
         self.speedx = (army_speed)*(math.cos(theta))
         self.speedy = (army_speed)*(math.sin(theta))
+
+        # just stops it when it gets too close to the cursor
         if abs((self.rect.x) - (x_mouse)) < army_radius:
             self.speedx = 0
         if abs((self.rect.y) - (y_mouse)) < army_radius:
@@ -69,9 +71,12 @@ class Army(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.rect.top = 0
 
+    def kill(self, group):
+        group.remove(self)
 
-    def collide(self):
-        print("army.collide()")
-        del self
+    def collide(self, group):
+        self.army_health -= 1
+        if self.army_health == 0:
+            self.kill(group)
 
         # if edge collision with other army, stop.

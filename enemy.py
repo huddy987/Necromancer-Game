@@ -41,14 +41,16 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, WIDTH, HEIGHT, player):
         self.followPlayer(player)
 
-    def collide(self):
+    def kill(self, group):
         grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40)
+        group.remove(self)
         return grave
-        
-    """
-        print("x")
-        print(self.rect.x)
-        print("y")
-        print(self.rect.y)
-        """
+
+    def collide(self, group):
+        self.enemy_health -= 1
+        if self.enemy_health == 0:
+            grave = self.kill(group)
+            return grave
+         else:
+          return 0
         
