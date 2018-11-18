@@ -73,12 +73,12 @@ class Army(pygame.sprite.Sprite):
 
         # Update sprite image
         if self.speedx != 0 or self.speedy != 0:
-            if self.spritetimer == 90:
+            if self.spritetimer == 30:
                 self.image = self.images[2]
                 self.spritetimer = 0
-            elif self.spritetimer == 60:
+            elif self.spritetimer == 20:
                 self.image = self.images[1]
-            elif self.spritetimer == 30:
+            elif self.spritetimer == 10:
                 self.image = self.images[0]
             self.spritetimer += 1
 

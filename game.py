@@ -48,7 +48,7 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
                 if grave != 0:
                   all_graves.add(grave)
 
-            
+
 
 
 def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves):
@@ -66,7 +66,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     all_players.update(WIDTH, HEIGHT)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
-    all_bullets.update()
+    all_bullets.update(all_bullets, player1)
     all_graves.update(player1, camera1, WIDTH, HEIGHT)
 
     text.draw_score(screen, player1.score, WIDTH)
@@ -91,7 +91,7 @@ def main():
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
-    
+
     player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
     all_armies = pygame.sprite.Group()
     all_bullets = pygame.sprite.Group()
