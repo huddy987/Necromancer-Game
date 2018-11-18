@@ -1,4 +1,4 @@
-import pygame, colors, player, army, enemy, math, text, random, time, camera
+import pygame, colors, player, army, enemy, math, text, random, time, camera, bullet
 
 def spawnEnemies(time, frequency):
     if (time % frequency) == 0:
@@ -30,7 +30,7 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, playerimage):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage):
 
     camera1.update(player1.speedx, player1.speedy, zoom)
     screen.blit(background, (camera1.x,camera1.y))
@@ -38,10 +38,15 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, b
     all_players.draw(screen)
     all_enemies.draw(screen)
     all_armies.draw(screen)
+    all_bullets.draw(screen)
     #Update
     all_players.update(WIDTH, HEIGHT, playerimage)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
+    all_bullets.update()
+
+    text.draw_score(screen, player1.score, WIDTH)
+    text.draw_health(screen, player1.health, WIDTH)
 
 
 def main():
@@ -52,7 +57,7 @@ def main():
     ktime = 0
 
     PLAYER_SIZE = 40
-    PLAYER_SPEED = 8
+    PLAYER_SPEED = 2
     PLAYER_HEALTH = 5
     FPS = 60
 
@@ -64,8 +69,10 @@ def main():
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
+    # FPS * 2 is the bullet cooldown (2 seconds)
     player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH, playerimage)
     all_armies = pygame.sprite.Group()
+    all_bullets = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
     camera1 = camera.Camera(WIDTH/2, HEIGHT/2, 1)
 
@@ -90,19 +97,21 @@ def main():
         if player1.health != 0:
             # Spawn enemies based on frequency
             if spawnEnemies(ktime, 100):
-                e = enemy.Enemy(random.randint(0, WIDTH), random.randint(0, HEIGHT), 0, random.randint(2,5), 40)
+                # world size is window size * 2
+                e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, playerimage)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
 
-
-            # Every 60 frames (every second) increment the score by 1
-            player1.score += (1 / 60)
+            # Draw bullets
+            if player1.check_shoot(FPS * 2) == True:
+                new_bullet = bullet.Bullet(player1, 10)
+                all_bullets.add(new_bullet)
 
         # If the player has died, show the score and lose message
         if player1.health == 0:

@@ -1,5 +1,6 @@
 import pygame
 import colors
+import bullet
 import game
 
 class Player(pygame.sprite.Sprite):
@@ -7,7 +8,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, startingX, startingY, playerSize, playerSpeed, starting_health, playerimage):
 
         pygame.sprite.Sprite.__init__(self)
-        #self.image.fill(colors.green)
+        self.size = playerSize
         self.image = playerimage[0]
         self.rect = self.image.get_rect()
         self.rect.centerx  = startingX
@@ -17,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.health = starting_health
         self.score = 0
         self.playerSpeed = playerSpeed
+        self.bullet_cooldown = 0
         self.spritetimer = 0
 
     def update(self, WIDTH, HEIGHT, playerimage):
@@ -54,3 +56,16 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
+
+        # Every 60 frames (every second) increment the score by 1
+        self.score += (1 / 60)
+
+        # decrement the bullet cooldown so we can shoot again
+        if self.bullet_cooldown != 0:
+            self.bullet_cooldown -= 1
+
+    def check_shoot(self, cooldown):
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_SPACE] and (self.speedx != 0 or self.speedy !=0) and (self.bullet_cooldown == 0):
+            self.bullet_cooldown = cooldown
+            return True
