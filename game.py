@@ -143,7 +143,7 @@ def main():
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Survive!")
+    pygame.display.set_caption("Necromancer")
     background = pygame.image.load("Background.png")
     clock = pygame.time.Clock()
 
