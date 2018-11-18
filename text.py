@@ -21,8 +21,8 @@ def draw_final_score(screen, player_score, screen_width, screen_height):
 def draw_final_message(screen, screen_width, screen_height):
     # lose message
     lose_font = pygame.font.SysFont('Comic Sans MS', 100)
-    lose_message = lose_font.render('You Lose!', False, (0, 0, 0))
-    lose_width, lose_height = lose_font.size('You Lose!')
+    lose_message = lose_font.render('Game Over.', False, (0, 0, 0))
+    lose_width, lose_height = lose_font.size('Game Over.')
     screen.blit(lose_message, ((screen_width / 2) - (lose_width / 2), (lose_height / 2)))
 
     # replay message
