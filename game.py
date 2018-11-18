@@ -30,22 +30,24 @@ def collisions(armies, all_enemies, player1, all_armies):
         hits += 1
     player1.health -= hits
 """
-def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1):
+def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves):
     army_collide_dict = pygame.sprite.groupcollide(all_armies,all_enemies, False, False)
     if army_collide_dict:       # key is the enemy, value is the army
         all_enemies_collided = army_collide_dict.keys()
         for arma in all_enemies_collided:      # get the death here
             arma.collide()
             for emma in army_collide_dict[arma]:
-                emma.collide()            # collide(enemy)
+                grave = emma.collide() # collide(enemy)
+                all_graves.add(grave)
                 all_enemies.remove(emma)
+    
 
 
             # collide(army_collide_dict[enemy])
 
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_graves):
 
     camera1.update(player1.speedx, player1.speedy, zoom)
     screen.blit(background, (camera1.x,camera1.y))
@@ -53,6 +55,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, b
     all_players.draw(screen)
     all_enemies.draw(screen)
     all_armies.draw(screen)
+    all_graves.draw(screen)
     #Update
     all_players.update(WIDTH, HEIGHT)
     all_enemies.update(WIDTH, HEIGHT, player1)
@@ -87,6 +90,8 @@ def main():
     all_armies.add(armies)
 
     all_enemies = pygame.sprite.Group()
+    
+    all_graves = pygame.sprite.Group()
 
     running = True
     while running:
@@ -94,7 +99,7 @@ def main():
         clock.tick(FPS)
         ktime += 1
         # Detect Collisions,
-        collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1)
+        collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves)
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
@@ -109,7 +114,7 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_graves)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
