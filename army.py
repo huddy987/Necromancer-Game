@@ -32,6 +32,8 @@ class Army(pygame.sprite.Sprite):
         self.army_health = army_health
         self.army_speed = army_speed
         self.spritetimer = 0
+        self.offsetx = random.uniform(-100,100)
+        self.offsety = random.uniform(-100,100)
 
     def update(self, WIDTH, HEIGHT):
         # the army will follow the mouse pointer
@@ -39,22 +41,22 @@ class Army(pygame.sprite.Sprite):
         self.speedy = 0
         x_mouse, y_mouse = pygame.mouse.get_pos()
         keystate = pygame.key.get_pressed()
-        x_distance = - ( ( self.rect.x ) - ( x_mouse ) )
-        y_distance = - ( ( self.rect.y ) - ( y_mouse ) )
+        x_distance = - ( (self.rect.x) - (x_mouse - self.offsetx) )
+        y_distance = - ( (self.rect.y) - (y_mouse - self.offsety) )
         theta = math.atan2(y_distance, x_distance)
 
         self.speedx = (army_speed)*(math.cos(theta))
         self.speedy = (army_speed)*(math.sin(theta))
 
         # just stops it when it gets too close to the cursor
-        if abs((self.rect.x) - (x_mouse)) < army_radius:
+        if abs((self.rect.x) - (x_mouse - self.offsetx)) < army_radius:
             self.speedx = 0
-        if abs((self.rect.y) - (y_mouse)) < army_radius:
+        if abs((self.rect.y) - (y_mouse - self.offsety)) < army_radius:
             self.speedy = 0  # glitches otherwise
 
 
         # Not 100% accuracy
-        if (random.random()) > 0.75:
+        if (random.random()) > 0.9:
             self.speedx = 0
             self.speedy = 0
 

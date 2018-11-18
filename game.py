@@ -13,10 +13,16 @@ def spawnEnemy(time, frequency):
     else:
         return False
 
+
 # Handles the reset screen
-def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
+def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies):
     for i in all_enemies:
         all_enemies.remove(i)
+    for i in all_graves:
+        all_graves.remove(i)
+    for i in all_armies:
+        all_armies.remove(i)
+    all_armies.add(army.Army(random.randint(100, WIDTH - 100), random.randint(100, HEIGHT - 100), 40, 5))
     screen.fill(colors.red)
     text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
     text.draw_final_message(screen, WIDTH, HEIGHT)
@@ -33,22 +39,31 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
         for arma in all_enemies_collided:      # get the death here
             arma.collide(all_armies)
             for emma in army_collide_dict[arma]:
-                grave = emma.collide(all_enemies) # collide(enemy)
+                grave = emma.collide(player1, all_enemies) # collide(enemy)
                 if grave != 0:
                     all_graves.add(grave)
 
-    # This deals with the bullets (from the wizard) hitting the
+    # This deals with the bullets (from the wizard) hitting the enemy
     bullets_collide_dict = pygame.sprite.groupcollide(all_bullets,all_enemies, False, False)
     if bullets_collide_dict:       # key is the army, value is the enemy list
         all_bullets_collided = bullets_collide_dict.keys()
         for arma in all_bullets_collided:      # get the death here
             arma.collide(all_bullets)
             for emma in bullets_collide_dict[arma]:
-                grave = emma.collide(all_enemies) # collide(enemy)
+                grave = emma.kill(player1, all_enemies) # collide(enemy)
                 if grave != 0:
                     all_graves.add(grave)
 
 # Handles the wizard resurrecting from a grave
+def wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves):
+    wizard_hit = pygame.sprite.spritecollideany(player1, all_enemies)
+    if wizard_hit:
+        # Kill the enemy that you are touching and add a grave in it's place
+        all_graves.add(wizard_hit.kill(player1, all_enemies))
+        player1.rect.x = random.randint(100, WIDTH - 100)
+        player1.rect.y = random.randint(100, HEIGHT - 100)
+        player1.health -= 1
+
 def grave_touching(player1, all_graves, all_armies, grave_counter):
         # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill
         grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
@@ -59,9 +74,9 @@ def grave_touching(player1, all_graves, all_armies, grave_counter):
                 new_army_guy = army.Army((grave_touch.rect.x) + 39, (grave_touch.rect.y) + 30, 40, grave_touch.speed)
                 all_armies.add(new_army_guy)
                 all_graves.remove(grave_touch)
-                grave_counter = 120
+                grave_counter = 60
         else:
-            grave_counter = 120
+            grave_counter = 60
         return grave_counter
     
 # Handles the wizard picking up a powerup
@@ -106,6 +121,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     text.draw_health(screen, player1.health, WIDTH)
 
 
+
 def main():
     # Global variables
     WIDTH = 800
@@ -117,20 +133,23 @@ def main():
     PLAYER_HEALTH = 5
     FPS = 60
 
-    grave_counter = 120
-    powerup_counter = 150
+    powerup_counter = 120
+    grave_counter = 60
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("My Game")
+    pygame.display.set_caption("Survive!")
     background = pygame.image.load("Background.png")
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
     player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
+
+    # Set the doc icon the the main player
+    pygame.display.set_icon(player1.image)
     all_armies = pygame.sprite.Group()
     all_bullets = pygame.sprite.Group()
-    armies = army.Army(200, 400, 40, 5)
+    armies = army.Army(random.randint(100, WIDTH - 100), random.randint(100, HEIGHT - 100), 40, 5)
     camera1 = camera.Camera(WIDTH/2, HEIGHT/2)
 
     all_players.add(player1)
@@ -159,15 +178,18 @@ def main():
         
         # Detect Collisions,
         collisions(all_enemies, all_armies, player1, all_graves, all_bullets)
-        #Detect grave touching
+        # Detect grave touching
         grave_counter = grave_touching(player1, all_graves, all_armies, grave_counter)
         powerup_counter = powerup_touching(player1, all_powerups, powerup_counter)
+        
+        # Detect wizard touching enemy
+        wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves)
+
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
             if event.type == pygame.QUIT:
                 running = False
-
         if player1.health != 0:
 
             # Draw / render
@@ -175,7 +197,7 @@ def main():
             updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves, all_powerups)
 
             # Spawn enemies based on frequency
-            if spawnItem(ktime, frequency):
+            if spawnEnemies(ktime, 100):
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
@@ -190,16 +212,16 @@ def main():
             text.draw_health(screen, player1.health, WIDTH)
 
             # Draw bullets
-            if player1.check_shoot(FPS * 2) == True:
+            if player1.check_shoot(FPS) == True:
                 new_bullet = bullet.Bullet(player1, 10)
                 all_bullets.add(new_bullet)
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
 
-            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen)
+            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies)
             keystate = pygame.key.get_pressed()
-            if keystate[pygame.K_SPACE]:
+            if keystate[pygame.K_RETURN]:
                 player1.health = PLAYER_HEALTH
                 player1.score = 0
 

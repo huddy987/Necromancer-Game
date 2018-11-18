@@ -27,6 +27,6 @@ def draw_final_message(screen, screen_width, screen_height):
 
     # replay message
     replay_font = pygame.font.SysFont('Comic Sans MS', 50)
-    replay_message = replay_font.render('Press spacebar to play again.', False, (0, 0, 0))
-    replay_width, replay_height = replay_font.size('Press spacebar to play again.')
+    replay_message = replay_font.render('Press return to play again.', False, (0, 0, 0))
+    replay_width, replay_height = replay_font.size('Press return to play again.')
     screen.blit(replay_message, ((screen_width / 2) - (replay_width / 2), (screen_height - 100)))
