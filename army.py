@@ -22,8 +22,8 @@ damage = 1  # for now
 class Army(pygame.sprite.Sprite):
     def __init__(self, startingX, startingY, army_size, army_speed):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((army_size, army_size))
-        self.image.fill(colors.blue)
+        self.images = [pygame.image.load("./army_images/army0000.png"), pygame.image.load("./army_images/army0001.png"), pygame.image.load("./army_images/army0002.png")]
+        self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = startingX
         self.rect.bottom = startingY
@@ -31,6 +31,7 @@ class Army(pygame.sprite.Sprite):
         self.speedy = 0
         self.army_health = army_health
         self.army_speed = army_speed
+        self.spritetimer = 0
 
     def update(self, WIDTH, HEIGHT):
         # the army will follow the mouse pointer
@@ -61,7 +62,6 @@ class Army(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
         # stops the box at the edge of the screen
-
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
@@ -70,6 +70,17 @@ class Army(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
+
+        # Update sprite image
+        if self.speedx != 0 or self.speedy != 0:
+            if self.spritetimer == 90:
+                self.image = self.images[2]
+                self.spritetimer = 0
+            elif self.spritetimer == 60:
+                self.image = self.images[1]
+            elif self.spritetimer == 30:
+                self.image = self.images[0]
+            self.spritetimer += 1
 
     def kill(self, group):
         group.remove(self)
