@@ -1,4 +1,4 @@
-import pygame, colors, player, army, enemy, math, text, random, time
+import pygame, colors, player, army, enemy, math, text, random, time, camera
 
 def spawnEnemies(time, frequency):
     if (time % frequency) == 0:
@@ -32,7 +32,10 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, player1):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1):
+
+    camera1.update(player1.speedx, player1.speedy, zoom)
+    screen.blit(background, (camera1.x,camera1.y))
     #all_sprites.draw(screen)
     all_players.draw(screen)
     all_enemies.draw(screen)
@@ -47,6 +50,7 @@ def main():
     # Global variables
     WIDTH = 800
     HEIGHT = 600
+    zoom = 1
     ktime = 0
 
     PLAYER_SIZE = 40
@@ -57,12 +61,14 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
+    background = pygame.image.load("Background.png")
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
     player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
     all_armies = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
+    camera1 = camera.Camera(WIDTH/2, HEIGHT/2, 1)
 
     all_players.add(player1)
     all_armies.add(armies)
@@ -90,7 +96,7 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, player1)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1)
 
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
@@ -101,7 +107,7 @@ def main():
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
-            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen)
+            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, zoom, screen)
             time.sleep(100)
 
         # *after* drawing everything, flip the display
