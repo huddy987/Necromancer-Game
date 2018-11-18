@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x  = x
         self.rect.y = y
         self.enemyType = enemyType
-        self.enemy_health = 2     # Change this to a passed value
+        self.health = 2     # Change this to a passed value
         self.spritetimer = 0
 
     #https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
@@ -51,15 +51,16 @@ class Enemy(pygame.sprite.Sprite):
         self.spritetimer += 1
         self.followPlayer(player)
 
-    def kill(self, group):
+    def kill(self, player, group):
         grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40, self.speed)
         group.remove(self)
+        player.score += 2
         return grave
 
-    def collide(self, group):
-        self.enemy_health -= 1
-        if self.enemy_health == 0:
-            grave = self.kill(group)
+    def collide(self, player, group):
+        self.health -= 1
+        if self.health == 0:
+            grave = self.kill(player, group)
             return grave
         else:
             return 0

@@ -60,7 +60,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
 
         # Every 60 frames (every second) increment the score by 1
-        self.score += (1 / 60)
+        self.score += (1 / 30)
 
         # decrement the bullet cooldown so we can shoot again
         if self.bullet_cooldown != 0:

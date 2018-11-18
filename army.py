@@ -54,7 +54,7 @@ class Army(pygame.sprite.Sprite):
 
 
         # Not 100% accuracy
-        if (random.random()) > 0.75:
+        if (random.random()) > 0.9:
             self.speedx = 0
             self.speedy = 0
 
