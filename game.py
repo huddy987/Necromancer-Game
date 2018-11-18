@@ -1,10 +1,49 @@
-import pygame, colors, player, army, enemy, math, text, random
+import pygame, colors, player, army, enemy, math, text, random, time
 
 def spawnEnemies(time, frequency):
     if (time % frequency) == 0:
         return True
     else:
         return False
+
+
+def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
+    screen.fill(colors.red)
+    text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
+    text.draw_final_message(screen, WIDTH, HEIGHT)
+    pygame.display.flip()
+    time.sleep(1)
+    player1.health = PLAYER_HEALTH
+    player1.score = 0
+    player1.rect.x = WIDTH/2
+    player1.rect.y = HEIGHT/2
+    for i in all_enemies:
+        all_enemies.remove(i)
+
+
+def collisions(armies, all_enemies, player1):
+    armyprotect = pygame.sprite.spritecollide(armies, all_enemies, False)
+    if armyprotect:
+        print(armyprotect)
+    for deads in armyprotect:
+        all_enemies.remove(deads)
+    playerhit = pygame.sprite.spritecollide(player1, all_enemies, False)
+    hits = 0
+    for i in playerhit:
+        hits += 1
+    player1.health -= hits
+
+
+def updates(all_enemies, all_players, all_armies):
+    #all_sprites.draw(screen)
+    all_players.draw(screen)
+    all_enemies.draw(screen)
+    all_armies.draw(screen)
+    #Update
+    all_players.update(WIDTH, HEIGHT)
+    all_enemies.update(WIDTH, HEIGHT, player1)
+    all_armies.update(WIDTH, HEIGHT)
+
 
 def main():
     # Global variables
@@ -37,7 +76,8 @@ def main():
         # keep loop running at the right speed
         clock.tick(FPS)
         ktime += 1
-
+        # Detect Collisions, 
+        collisions(armies, all_enemies, player1)
         # Process input (events)
         for event in pygame.event.get():
             # check for closing window
@@ -50,18 +90,9 @@ def main():
                 e = enemy.Enemy(random.randint(0, WIDTH), random.randint(0, HEIGHT), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
 
-            # Update
-            all_players.update(WIDTH, HEIGHT)
-            all_enemies.update(WIDTH, HEIGHT, player1)
-            all_armies.update(WIDTH, HEIGHT)
-
+            updates(all_enemies, all_players, all_armies)
             # Draw / render
             screen.fill(colors.black)
-            #all_sprites.draw(screen)
-            all_players.draw(screen)
-            all_enemies.draw(screen)
-            all_armies.draw(screen)
-
 
             # Every 60 frames (every second) increment the score by 1
             player1.score += (1 / 60)
@@ -71,9 +102,7 @@ def main():
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
-            screen.fill(colors.red)
-            text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
-            text.draw_final_message(screen, WIDTH, HEIGHT)
+            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen)
 
         # *after* drawing everything, flip the display
         pygame.display.flip()
