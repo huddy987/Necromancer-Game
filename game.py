@@ -6,14 +6,15 @@ def spawnEnemies(time, frequency):
     else:
         return False
 
-def main():  
+def main():
     # Global variables
     WIDTH = 800
     HEIGHT = 600
     ktime = 0
-    
+
     PLAYER_SIZE = 40
     PLAYER_SPEED = 8
+    PLAYER_HEALTH = 5
     FPS = 60
 
     pygame.init()
@@ -22,7 +23,7 @@ def main():
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
-    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED)
+    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
     all_armies = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
 
@@ -44,11 +45,11 @@ def main():
                 running = False
 
         if player1.health != 0:
-          # Spawn enemies based on frequency
-          if spawnEnemies(ktime, 100):
-              e = enemy.Enemy(random.randint(0, WIDTH), random.randint(0, HEIGHT), 0, random.randint(2,5), 40)
-              all_enemies.add(e) 
-              
+            # Spawn enemies based on frequency
+            if spawnEnemies(ktime, 100):
+                e = enemy.Enemy(random.randint(0, WIDTH), random.randint(0, HEIGHT), 0, random.randint(2,5), 40)
+                all_enemies.add(e)
+
             # Update
             all_players.update(WIDTH, HEIGHT)
             all_enemies.update(WIDTH, HEIGHT, player1)
