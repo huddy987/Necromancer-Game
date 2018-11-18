@@ -2,7 +2,7 @@ import pygame
 import colors
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, startingX, startingY, playerSize):
+    def __init__(self, startingX, startingY, playerSize, starting_health):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((playerSize, playerSize))
         self.image.fill(colors.green)
@@ -11,6 +11,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = startingY
         self.speedx = 0
         self.speedy = 0
+        self.health = starting_health
+        self.score = 0
 
     def update(self, WIDTH, HEIGHT):
         self.speedx = 0
@@ -36,4 +38,4 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
         if self.rect.top < 0:
-            self.rect.top = 0 
+            self.rect.top = 0
