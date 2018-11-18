@@ -33,7 +33,7 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
     # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill
     grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
     if grave_touch:
-        armamento = army.Army(200, 400, 40, 5)
+        armamento = army.Army((grave_touch.rect.x) + 39, (grave_touch.rect.y) + 30, 40, grave_touch.speed)
         all_armies.add(armamento)
         all_graves.remove(grave_touch)
 
@@ -47,7 +47,6 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
                 grave = emma.collide(all_enemies) # collide(enemy)
                 if grave != 0:
                   all_graves.add(grave)
-
             
 
 
