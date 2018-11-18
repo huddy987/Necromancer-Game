@@ -93,12 +93,15 @@ def main():
             updates(all_enemies, all_players, all_armies)
             # Draw / render
             screen.fill(colors.black)
+            
+            text.draw_score(screen, player1.score, WIDTH)
+            text.draw_health(screen, player1.health, WIDTH)
+
 
             # Every 60 frames (every second) increment the score by 1
             player1.score += (1 / 60)
 
-            # Update score
-            text.draw_score(screen, player1.score, WIDTH)
+            player1.health -= 1
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
