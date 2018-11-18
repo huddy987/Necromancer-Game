@@ -30,13 +30,6 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
                 if grave != 0:
                   all_graves.add(grave)
 
-    # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill
-    grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
-    if grave_touch:
-        armamento = army.Army((grave_touch.rect.x) + 39, (grave_touch.rect.y) + 30, 40, grave_touch.speed)
-        all_armies.add(armamento)
-        all_graves.remove(grave_touch)
-
     # This deals with the bullets (from the wizard) hitting the
     bullets_collide_dict = pygame.sprite.groupcollide(all_bullets,all_enemies, False, False)
     if bullets_collide_dict:       # key is the army, value is the enemy list
@@ -47,25 +40,42 @@ def collisions(all_enemies, all_armies, player1, all_graves, all_bullets):
                 grave = emma.collide(all_enemies) # collide(enemy)
                 if grave != 0:
                   all_graves.add(grave)
-                  
+
+def grave_touching(player1, all_graves, all_armies, grave_counter):
+        # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill
+        grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
+        if grave_touch:
+            if grave_counter != 0:
+                grave_counter -= 1
+            elif grave_counter == 0:
+                new_army_guy = army.Army((grave_touch.rect.x) + 39, (grave_touch.rect.y) + 30, 40, grave_touch.speed)
+                all_armies.add(new_army_guy)
+                all_graves.remove(grave_touch)
+                grave_counter = 120
+        else:
+            grave_counter = 120
+        return grave_counter
+
+def music():
+    pygame.mixer.music.load("./soundtrack.wav")
+    pygame.mixer.music.play(-1)
 
 def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves):
 
     camera1.update(player1, WIDTH, HEIGHT)
     screen.blit(background, (camera1.x, camera1.y))
-    #all_sprites.draw(screen)
+    all_graves.draw(screen)
     all_players.draw(screen)
     all_enemies.draw(screen)
-    all_graves.draw(screen)
     all_armies.draw(screen)
     all_bullets.draw(screen)
 
     #Update
+    all_graves.update(player1, camera1, WIDTH, HEIGHT, all_graves)
     all_players.update(WIDTH, HEIGHT)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update(all_bullets, player1)
-    all_graves.update(player1, camera1, WIDTH, HEIGHT)
 
     text.draw_score(screen, player1.score, WIDTH)
     text.draw_health(screen, player1.health, WIDTH)
@@ -81,6 +91,8 @@ def main():
     PLAYER_SPEED = 2
     PLAYER_HEALTH = 5
     FPS = 60
+
+    grave_counter = 120
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -103,6 +115,8 @@ def main():
 
     all_graves = pygame.sprite.Group()
 
+    music()
+
     running = True
     while running:
         # keep loop running at the right speed
@@ -110,6 +124,8 @@ def main():
         ktime += 1
         # Detect Collisions,
         collisions(all_enemies, all_armies, player1, all_graves, all_bullets)
+        #Detect grave touching
+        grave_counter = grave_touching(player1, all_graves, all_armies, grave_counter)
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
@@ -123,7 +139,7 @@ def main():
             updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves)
 
             # Spawn enemies based on frequency
-            if spawnEnemies(ktime, 100):
+            if spawnEnemies(ktime, 500):
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)

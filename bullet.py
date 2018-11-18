@@ -8,8 +8,8 @@ class Bullet(pygame.sprite.Sprite):
         self.images = [pygame.image.load("./bullet_images/bullet0000.png"), pygame.image.load("./bullet_images/bullet0000.png"), pygame.image.load("./bullet_images/bullet0001.png"), pygame.image.load("./bullet_images/bullet0002.png"), pygame.image.load("./bullet_images/bullet0003.png"), pygame.image.load("./bullet_images/bullet0004.png"), pygame.image.load("./bullet_images/bullet0005.png")]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.centerx  = player.rect.x + player.size / 2
-        self.rect.bottom = player.rect.y + player.size / 2
+        self.rect.centerx  = player.rect.x + 40
+        self.rect.bottom = player.rect.y + 90
         self.speed = [0,0]
         self.speed[0] = player.speedx * 5
         self.speed[1] = player.speedy * 5
