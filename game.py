@@ -6,22 +6,25 @@ def spawnItem(time, frequency):
         return True
     else:
         return False
-    
-def spawnEnemy(time, frequency):
-    if (time % frequency) == 0:
-        return True
+
+def spawnEnemies(count, multiplier):
+    count += multiplier
+    if count >= 100:
+        return (True, 1, multiplier + 0.001)
     else:
-        return False
+        return (False, count, multiplier)
 
 
 # Handles the reset screen
-def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies):
+def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies, all_powerups):
     for i in all_enemies:
         all_enemies.remove(i)
     for i in all_graves:
         all_graves.remove(i)
     for i in all_armies:
         all_armies.remove(i)
+    for i in all_powerups:
+        all_powerups.remove(i)
     all_armies.add(army.Army(random.randint(100, WIDTH - 100), random.randint(100, HEIGHT - 100), 40, 5))
     screen.fill(colors.red)
     text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
@@ -78,7 +81,7 @@ def grave_touching(player1, all_graves, all_armies, grave_counter):
         else:
             grave_counter = 60
         return grave_counter
-    
+
 # Handles the wizard picking up a powerup
 def powerup_touching(player1, all_powerups, powerup_counter):
     powerup_touch = pygame.sprite.spritecollideany(player1, all_powerups)
@@ -86,11 +89,11 @@ def powerup_touching(player1, all_powerups, powerup_counter):
         if powerup_counter != 0:
             powerup_counter -= 1
         elif powerup_counter == 0:
-            powerup_counter = 150
+            powerup_counter = 240
             all_powerups.remove(powerup_touch)
             player1.health += 2
     else:
-        powerup_counter = 150
+        powerup_counter = 240
     return powerup_counter
 
 # Plays music throughout the gameplay
@@ -133,8 +136,10 @@ def main():
     PLAYER_HEALTH = 5
     FPS = 60
 
-    powerup_counter = 120
+    powerup_counter = 240
     grave_counter = 60
+    enemy_spawn_counter = 1
+    enemy_spawn_multipler = 1
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -161,7 +166,7 @@ def main():
     all_powerups = pygame.sprite.Group()
 
     music()
-    
+
     frequency = 100
 
     running = True
@@ -169,19 +174,19 @@ def main():
         # keep loop running at the right speed
         clock.tick(FPS)
         ktime += 1
-        
+
         if ktime % frequency == 0:
             frequency -= 5
             if frequency <= 50:
                 frequency = 50
-        
-        
+
+
         # Detect Collisions,
         collisions(all_enemies, all_armies, player1, all_graves, all_bullets)
         # Detect grave touching
         grave_counter = grave_touching(player1, all_graves, all_armies, grave_counter)
         powerup_counter = powerup_touching(player1, all_powerups, powerup_counter)
-        
+
         # Detect wizard touching enemy
         wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves)
 
@@ -197,12 +202,14 @@ def main():
             updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, background, player1, camera1, all_bullets, all_graves, all_powerups)
 
             # Spawn enemies based on frequency
-            if spawnEnemies(ktime, 100):
+            (spawn_bool, enemy_spawn_counter, enemy_spawn_multipler) = spawnEnemies(enemy_spawn_counter, enemy_spawn_multipler)
+
+            if spawn_bool:
+                print("Spawn")
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
-                print('e', ktime)
-            
+
             # Spawn powerups
             if spawnItem(ktime, 500):
                 p = powerup.PowerUp(random.randint(0, WIDTH * 2), random.randint(0, HEIGHT * 2), 40)
@@ -218,12 +225,13 @@ def main():
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
-
-            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies)
+            enemy_spawn_multipler = 1
+            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies, all_powerups)
             keystate = pygame.key.get_pressed()
             if keystate[pygame.K_RETURN]:
                 player1.health = PLAYER_HEALTH
                 player1.score = 0
+                print(enemy_spawn_multipler)
 
         # *after* drawing everything, flip the display
         pygame.display.flip()
