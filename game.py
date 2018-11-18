@@ -10,7 +10,7 @@ def spawnItem(time, frequency):
 def spawnEnemies(count, multiplier):
     count += multiplier
     if count >= 100:
-        return (True, 1, multiplier + 0.001)
+        return (True, 1, multiplier + 0.01)
     else:
         return (False, count, multiplier)
 
@@ -106,11 +106,11 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     camera1.update(player1, WIDTH, HEIGHT)
     screen.blit(background, (camera1.x, camera1.y))
     all_graves.draw(screen)
+    all_powerups.draw(screen)
     all_players.draw(screen)
     all_enemies.draw(screen)
     all_armies.draw(screen)
     all_bullets.draw(screen)
-    all_powerups.draw(screen)
 
     #Update
     all_graves.update(player1, camera1, WIDTH, HEIGHT, all_graves)
@@ -205,7 +205,6 @@ def main():
             (spawn_bool, enemy_spawn_counter, enemy_spawn_multipler) = spawnEnemies(enemy_spawn_counter, enemy_spawn_multipler)
 
             if spawn_bool:
-                print("Spawn")
                 # world size is window size * 2
                 e = enemy.Enemy(random.randint(-WIDTH * 2, WIDTH * 2), random.randint(-HEIGHT * 2, HEIGHT * 2), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
@@ -231,7 +230,6 @@ def main():
             if keystate[pygame.K_RETURN]:
                 player1.health = PLAYER_HEALTH
                 player1.score = 0
-                print(enemy_spawn_multipler)
 
         # *after* drawing everything, flip the display
         pygame.display.flip()

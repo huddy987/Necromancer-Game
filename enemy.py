@@ -3,9 +3,6 @@ import colors
 import math
 import gravestone
 
-damage = 1
-
-
 class Enemy(pygame.sprite.Sprite):
     # Spawn an enemy based on x, y, enemyType and enemy Speed
     # enemyType has no current use
