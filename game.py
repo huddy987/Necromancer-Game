@@ -8,16 +8,14 @@ def spawnEnemies(time, frequency):
 
 
 def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
-    player1.health = PLAYER_HEALTH
-    player1.score = 0
-    player1.rect.x = WIDTH/2
-    player1.rect.y = HEIGHT/2
     for i in all_enemies:
         all_enemies.remove(i)
     screen.fill(colors.red)
     text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
     text.draw_final_message(screen, WIDTH, HEIGHT)
     pygame.display.flip()
+    player1.rect.x = WIDTH/2
+    player1.rect.y = HEIGHT/2
 
 def collisions(armies, all_enemies, player1):
     armyprotect = pygame.sprite.spritecollide(armies, all_enemies, False)
@@ -107,8 +105,12 @@ def main():
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
-            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, zoom, screen)
-            time.sleep(100)
+
+            reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen)
+            keystate = pygame.key.get_pressed()
+            if keystate[pygame.K_SPACE]:
+                player1.health = PLAYER_HEALTH
+                player1.score = 0
 
         # *after* drawing everything, flip the display
         pygame.display.flip()
