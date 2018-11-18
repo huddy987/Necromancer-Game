@@ -45,6 +45,9 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, b
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update()
 
+    text.draw_score(screen, player1.score, WIDTH)
+    text.draw_health(screen, player1.health, WIDTH)
+
 
 def main():
     # Global variables
@@ -100,21 +103,11 @@ def main():
             screen.fill(colors.black)
             # Draw / render
             updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets)
-            text.draw_score(screen, player1.score, WIDTH)
-            text.draw_health(screen, player1.health, WIDTH)
 
             # Draw bullets
             if player1.check_shoot(FPS * 2) == True:
                 new_bullet = bullet.Bullet(player1, 10)
                 all_bullets.add(new_bullet)
-
-            # Every 60 frames (every second) increment the score by 1
-            player1.score += (1 / 60)
-
-            # decrement the bullet cooldown so we can shoot again
-            if player1.bullet_cooldown != 0:
-                player1.bullet_cooldown -= 1
-
 
         # If the player has died, show the score and lose message
         if player1.health == 0:
