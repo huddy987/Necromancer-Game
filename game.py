@@ -8,18 +8,16 @@ def spawnEnemies(time, frequency):
 
 
 def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
-    screen.fill(colors.red)
-    text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
-    text.draw_final_message(screen, WIDTH, HEIGHT)
-    pygame.display.flip()
-    time.sleep(1)
     player1.health = PLAYER_HEALTH
     player1.score = 0
     player1.rect.x = WIDTH/2
     player1.rect.y = HEIGHT/2
     for i in all_enemies:
         all_enemies.remove(i)
-
+    screen.fill(colors.red)
+    text.draw_final_score(screen, player1.score, WIDTH, HEIGHT)
+    text.draw_final_message(screen, WIDTH, HEIGHT)
+    pygame.display.flip()
 
 def collisions(armies, all_enemies, player1):
     armyprotect = pygame.sprite.spritecollide(armies, all_enemies, False)
@@ -34,7 +32,7 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(all_enemies, all_players, all_armies):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, player1):
     #all_sprites.draw(screen)
     all_players.draw(screen)
     all_enemies.draw(screen)
@@ -76,9 +74,9 @@ def main():
         # keep loop running at the right speed
         clock.tick(FPS)
         ktime += 1
-        # Detect Collisions, 
+        # Detect Collisions,
         collisions(armies, all_enemies, player1)
-        # Process input (events)
+        # Process exit event
         for event in pygame.event.get():
             # check for closing window
             if event.type == pygame.QUIT:
@@ -90,10 +88,10 @@ def main():
                 e = enemy.Enemy(random.randint(0, WIDTH), random.randint(0, HEIGHT), 0, random.randint(2,5), 40)
                 all_enemies.add(e)
 
-            updates(all_enemies, all_players, all_armies)
-            # Draw / render
             screen.fill(colors.black)
-            
+            # Draw / render
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, player1)
+
             text.draw_score(screen, player1.score, WIDTH)
             text.draw_health(screen, player1.health, WIDTH)
 
@@ -101,11 +99,10 @@ def main():
             # Every 60 frames (every second) increment the score by 1
             player1.score += (1 / 60)
 
-            player1.health -= 1
-
         # If the player has died, show the score and lose message
         if player1.health == 0:
             reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen)
+            time.sleep(100)
 
         # *after* drawing everything, flip the display
         pygame.display.flip()
