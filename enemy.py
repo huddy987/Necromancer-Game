@@ -51,6 +51,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.enemy_health == 0:
             grave = self.kill(group)
             return grave
-         else:
-          return 0
+        else:
+            return 0
         

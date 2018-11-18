@@ -18,7 +18,7 @@ def reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen):
     player1.rect.y = HEIGHT/2
 
 
-def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves):
+def collisions(all_enemies, all_armies, player1, all_graves):
     army_collide_dict = pygame.sprite.groupcollide(all_armies,all_enemies, False, False)
     if army_collide_dict:       # key is the army, value is the enemy list
         all_enemies_collided = army_collide_dict.keys()
@@ -30,8 +30,11 @@ def collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves):
                   all_graves.add(grave)
                   # all_enemies.remove(emma)
     # if the player sprite collides with the graveyard sprite, instantiate an army, add it the army group then kill 
-
-
+    grave_touch = pygame.sprite.spritecollideany(player1, all_graves)
+    if grave_touch:
+        armamento = army.Army(200, 400, 40, 5)
+        all_armies.add(armamento)
+        all_graves.remove(grave_touch)
     # collide(army_collide_dict[enemy])
 
 
@@ -88,7 +91,7 @@ def main():
         clock.tick(FPS)
         ktime += 1
         # Detect Collisions,
-        collisions(all_enemies, all_armies, WIDTH, HEIGHT, player1, all_graves)
+        collisions(all_enemies, all_armies, player1, all_graves)
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
