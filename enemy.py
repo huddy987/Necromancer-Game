@@ -1,6 +1,7 @@
 import pygame
 import colors
 import math
+import gravestone
 
 damage = 1
 
@@ -41,10 +42,15 @@ class Enemy(pygame.sprite.Sprite):
         self.followPlayer(player)
 
     def kill(self, group):
+        grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40)
         group.remove(self)
+        return grave
 
     def collide(self, group):
         self.enemy_health -= 1
         if self.enemy_health == 0:
-            self.kill(group)
+            grave = self.kill(group)
+            return grave
+         else:
+          return 0
         
