@@ -95,6 +95,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
     text.draw_health(screen, player1.health, WIDTH)
 
 
+
 def main():
     # Global variables
     WIDTH = 800
@@ -110,7 +111,7 @@ def main():
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Raygame.py")
+    pygame.display.set_caption("Survive!")
     background = pygame.image.load("Background.png")
     clock = pygame.time.Clock()
 
@@ -145,12 +146,12 @@ def main():
         grave_counter = grave_touching(player1, all_graves, all_armies, grave_counter)
         # Detect wizard touching enemy
         wizard_touching(player1, all_enemies, WIDTH, HEIGHT, all_graves)
+
         # Process exit event
         for event in pygame.event.get():
             # check for closing window
             if event.type == pygame.QUIT:
                 running = False
-
         if player1.health != 0:
 
             # Draw / render
@@ -176,7 +177,7 @@ def main():
 
             reset(player1, all_enemies, PLAYER_HEALTH, WIDTH, HEIGHT, screen, all_graves, all_armies)
             keystate = pygame.key.get_pressed()
-            if keystate[pygame.K_SPACE]:
+            if keystate[pygame.K_RETURN]:
                 player1.health = PLAYER_HEALTH
                 player1.score = 0
 
