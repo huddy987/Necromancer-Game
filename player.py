@@ -2,7 +2,9 @@ import pygame
 import colors
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, startingX, startingY, playerSize, starting_health):
+
+    def __init__(self, startingX, startingY, playerSize, playerSpeed, starting_health):
+
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((playerSize, playerSize))
         self.image.fill(colors.green)
@@ -13,6 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         self.health = starting_health
         self.score = 0
+        self.playerSpeed = playerSpeed
 
     def update(self, WIDTH, HEIGHT):
         self.speedx = 0
@@ -20,13 +23,13 @@ class Player(pygame.sprite.Sprite):
         keystate = pygame.key.get_pressed()
 
         if keystate[pygame.K_a]:
-            self.speedx = -5
+            self.speedx = -1 * self.playerSpeed
         if keystate[pygame.K_d]:
-            self.speedx = 5
+            self.speedx = self.playerSpeed
         if keystate[pygame.K_w]:
-            self.speedy = -5
+            self.speedy = -1 * self.playerSpeed
         if keystate[pygame.K_s]:
-            self.speedy = 5
+            self.speedy = self.playerSpeed
 
         self.rect.x += self.speedx
         self.rect.y += self.speedy
