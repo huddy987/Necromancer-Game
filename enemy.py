@@ -1,6 +1,9 @@
 import pygame
 import colors
 import math
+import gravestone
+
+damage = 1
 
 class Enemy(pygame.sprite.Sprite):
     # Spawn an enemy based on x, y, enemyType and enemy Speed
@@ -15,6 +18,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x  = x
         self.rect.y = y
         self.enemyType = enemyType
+        self.enemy_health = 2     # Change this to a passed value
         self.spritetimer = 0
 
     #https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
@@ -35,6 +39,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y += 0
 
     def update(self, WIDTH, HEIGHT, player):
+        self.followPlayer(player)
         if self.spritetimer == 90:
             self.image = self.images[2]
             self.spritetimer = 0
@@ -44,3 +49,16 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.images[0]
         self.spritetimer += 1
         self.followPlayer(player)
+
+    def kill(self, group):
+        grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40)
+        group.remove(self)
+        return grave
+
+    def collide(self, group):
+        self.enemy_health -= 1
+        if self.enemy_health == 0:
+            grave = self.kill(group)
+            return grave
+        else:
+            return 0
