@@ -30,7 +30,7 @@ def collisions(armies, all_enemies, player1):
     player1.health -= hits
 
 
-def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets):
+def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage):
 
     camera1.update(player1.speedx, player1.speedy, zoom)
     screen.blit(background, (camera1.x,camera1.y))
@@ -40,7 +40,7 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, b
     all_armies.draw(screen)
     all_bullets.draw(screen)
     #Update
-    all_players.update(WIDTH, HEIGHT)
+    all_players.update(WIDTH, HEIGHT, playerimage)
     all_enemies.update(WIDTH, HEIGHT, player1)
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update()
@@ -65,11 +65,12 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
     background = pygame.image.load("Background.png")
+    playerimage = [pygame.image.load("player0000.png"), pygame.image.load("player0001.png"), pygame.image.load("player0002.png")]
     clock = pygame.time.Clock()
 
     all_players = pygame.sprite.Group()
     # FPS * 2 is the bullet cooldown (2 seconds)
-    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH)
+    player1 = player.Player(WIDTH / 2, HEIGHT / 2, PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH, playerimage)
     all_armies = pygame.sprite.Group()
     all_bullets = pygame.sprite.Group()
     armies = army.Army(200, 400, 40, 5)
@@ -102,7 +103,10 @@ def main():
 
             screen.fill(colors.black)
             # Draw / render
-            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets)
+            updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, zoom, background, player1, camera1, all_bullets, playerimage)
+
+            text.draw_score(screen, player1.score, WIDTH)
+            text.draw_health(screen, player1.health, WIDTH)
 
             # Draw bullets
             if player1.check_shoot(FPS * 2) == True:
