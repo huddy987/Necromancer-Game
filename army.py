@@ -14,7 +14,7 @@ army_size = 4               # probably the same
 army_speed = 5           # different for different level of army
 army_radius = 5   # army will stop moving when it's this close to the pointer
 army_number = 100
-army_health = 3
+army_health = 4
 damage = 1  # for now
 
 

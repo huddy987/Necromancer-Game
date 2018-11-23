@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
 
     # Allows the enemy to follow the player by calculating the
     # distnace vector between the enemy and the player and multiplying it by the speed of the enemy
-    def followPlayer(self, player):
+    def followPlayer(self, player, camera, HEIGHT, WIDTH):
         dx = self.rect.x - player.rect.x
         dy = self.rect.y - player.rect.y
         distance = math.hypot(dx, dy)
@@ -32,12 +32,18 @@ class Enemy(pygame.sprite.Sprite):
             ySpeed = dy/distance
             self.rect.x -= xSpeed * self.speed
             self.rect.y -= ySpeed * self.speed
+
+        if not (camera.x == 0 or camera.x == -WIDTH):
+            self.rect.x -= player.speedx * 2
+
+        if not (camera.y == 0  or camera.y == -HEIGHT):
+            self.rect.y -= player.speedy * 2
         else:
             self.rect.x += 0
             self.rect.y += 0
 
-    def update(self, WIDTH, HEIGHT, player):
-        self.followPlayer(player)
+    def update(self, WIDTH, HEIGHT, player, camera):
+        self.followPlayer(player, camera, HEIGHT, WIDTH)
         if self.spritetimer == 90:
             self.image = self.images[2]
             self.spritetimer = 0
@@ -46,7 +52,7 @@ class Enemy(pygame.sprite.Sprite):
         elif self.spritetimer == 30:
             self.image = self.images[0]
         self.spritetimer += 1
-        self.followPlayer(player)
+        self.followPlayer(player, camera, HEIGHT, WIDTH)
 
     def kill(self, player, group):
         grave = gravestone.GraveStone(self.rect.x, self.rect.y, 40, self.speed)

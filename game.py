@@ -114,8 +114,8 @@ def updates(screen, all_enemies, all_players, all_armies, WIDTH, HEIGHT, backgro
 
     #Update
     all_graves.update(player1, camera1, WIDTH, HEIGHT, all_graves)
-    all_players.update(WIDTH, HEIGHT)
-    all_enemies.update(WIDTH, HEIGHT, player1)
+    all_players.update(WIDTH, HEIGHT, camera1)
+    all_enemies.update(WIDTH, HEIGHT, player1, camera1)
     all_armies.update(WIDTH, HEIGHT)
     all_bullets.update(all_bullets, player1)
     all_powerups.update(player1, camera1, WIDTH, HEIGHT, all_powerups)

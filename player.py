@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.bullet_cooldown = 0
         self.spritetimer = 0
 
-    def update(self, WIDTH, HEIGHT):
+    def update(self, WIDTH, HEIGHT, camera):
         # Update sprite if the chracter is moving
         if self.speedx != 0 or self.speedy != 0:
             if self.spritetimer == 90:
@@ -39,13 +39,25 @@ class Player(pygame.sprite.Sprite):
         keystate = pygame.key.get_pressed()
 
         if keystate[pygame.K_a]:
-            self.speedx = -1 * self.playerSpeed
+            if camera.x == 0:
+                self.speedx = -1 * self.playerSpeed * 4
+            else:
+                self.speedx = -1 * self.playerSpeed
         if keystate[pygame.K_d]:
-            self.speedx = self.playerSpeed
+            if camera.x == -WIDTH:
+                self.speedx = self.playerSpeed * 4
+            else:
+                self.speedx = self.playerSpeed
         if keystate[pygame.K_w]:
-            self.speedy = -1 * self.playerSpeed
+            if camera.y == 0:
+                self.speedy = -1 * self.playerSpeed * 4
+            else:
+                self.speedy = -1 * self.playerSpeed
         if keystate[pygame.K_s]:
-            self.speedy = self.playerSpeed
+            if camera.y == -HEIGHT:
+                self.speedy = self.playerSpeed * 4
+            else:
+                self.speedy = self.playerSpeed
 
         self.rect.x += self.speedx
         self.rect.y += self.speedy
